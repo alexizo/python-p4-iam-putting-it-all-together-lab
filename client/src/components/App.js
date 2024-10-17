@@ -1,38 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { Switch, Route } from "react-router-dom";
-import NavBar from "./NavBar";
-import Login from "../pages/Login";
-import RecipeList from "../pages/RecipeList";
-import NewRecipe from "../pages/NewRecipe";
+// src/components/App.js
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from '../pages/Login';
+import NewRecipe from '../pages/NewRecipe';
+import RecipeList from '../pages/RecipeList';
+import NavBar from './NavBar';
 
 function App() {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    // auto-login
-    fetch("/check_session").then((r) => {
-      if (r.ok) {
-        r.json().then((user) => setUser(user));
-      }
-    });
-  }, []);
-
-  if (!user) return <Login onLogin={setUser} />;
-
   return (
-    <>
-      <NavBar user={user} setUser={setUser} />
-      <main>
-        <Switch>
-          <Route path="/new">
-            <NewRecipe user={user} />
-          </Route>
-          <Route path="/">
-            <RecipeList />
-          </Route>
-        </Switch>
-      </main>
-    </>
+    <Router>
+      <NavBar />
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/new-recipe" element={<NewRecipe />} />
+        <Route path="/recipes" element={<RecipeList />} />
+        {/* You can add a redirect or a default route here if needed */}
+      </Routes>
+    </Router>
   );
 }
 

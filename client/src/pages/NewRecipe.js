@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import ReactMarkdown from "react-markdown";
 import { Button, Error, FormField, Input, Label, Textarea } from "../styles";
 
 function NewRecipe({ user }) {
   const [title, setTitle] = useState("My Awesome Recipe");
-  const [minutesToComplete, setMinutesToComplete] = useState("30");
+  const [minutesToComplete, setMinutesToComplete] = useState(30);  // Default as a number
   const [instructions, setInstructions] = useState(`Here's how you make it.
   
 ## Ingredients
@@ -20,9 +20,9 @@ function NewRecipe({ user }) {
   `);
   const [errors, setErrors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
 
-  function handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
     fetch("/recipes", {
@@ -35,15 +35,21 @@ function NewRecipe({ user }) {
         instructions,
         minutes_to_complete: minutesToComplete,
       }),
-    }).then((r) => {
-      setIsLoading(false);
-      if (r.ok) {
-        history.push("/");
-      } else {
-        r.json().then((err) => setErrors(err.errors));
-      }
-    });
-  }
+    })
+      .then((response) => {
+        setIsLoading(false);
+        if (response.ok) {
+          navigate("/");  // Redirect after successful submission
+        } else {
+          response.json().then((err) => setErrors(err.errors));
+        }
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.error("Error:", error);
+        setErrors(["An unexpected error occurred."]);
+      });
+  };
 
   return (
     <Wrapper>
