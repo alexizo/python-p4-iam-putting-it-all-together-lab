@@ -21,9 +21,9 @@ with app.app_context():
         user = User(
             username=username,
             bio=fake.paragraph(nb_sentences=3),
-            image_url=fake.image_url(),  # Use faker's image_url for random images
+            image_url=fake.image_url(),
         )
-        user.password_hash = user.username + 'password'  # Consider using hashing
+        user.password_hash = user.username + 'password' 
 
         users.append(user)
 
